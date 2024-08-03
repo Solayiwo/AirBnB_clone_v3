@@ -12,4 +12,3 @@ def status():
     response = jsonify(data)
 
     return response
-
