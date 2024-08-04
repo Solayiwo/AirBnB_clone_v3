@@ -59,7 +59,7 @@ class DBStorage:
                 return self.all(cls)[st_id]
             return None
         return None
-
+    
     def count(self, cls=None):
         """Count the number of instances"""
         if cls is None:
