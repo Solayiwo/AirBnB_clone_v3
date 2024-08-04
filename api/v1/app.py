@@ -4,10 +4,11 @@
 from os import getenv
 from flask import Flask
 from models import storage
-from api.v1.views import app_views
+
 
 
 app = Flask(__name__)
+from api.v1.views import app_views
 app.register_blueprint(app_views)
 
 
@@ -16,13 +17,11 @@ def teardown_db(exception):
     """Teardown function"""
     storage.close()
 
-
 @app.errorhandler(404)
 def error_404(e):
     """Page not found"""
     err = {"error": "Not found"}
     return err, 404
-
 
 if __name__ == "__main__":
     host = getenv('HBNB_API_HOST', '0.0.0.0')
