@@ -2,7 +2,7 @@
 """States API"""
 
 from api.v1.views import app_views
-from flask import abort, jsonify
+from flask import abort, jsonify, request
 from models import storage
 from models.state import State
 
@@ -35,3 +35,20 @@ def delete_state(state_id):
         storage.delete(data)
         storage.save()
     return jsonify({}), 200
+
+@app_views.route('/states', methods=['POST'], strict_slashes=False)
+def post_states():
+    """ Post State """
+    if not request.is_json:
+        return jsonify('Not a JSON')
+
+    data = request.get_json()
+    
+    if 'name' not in data:
+        abort(404, 'Missing name')
+
+    inst = State(**data)
+    inst.save()
+
+    return jsonify(inst.to_dict()), 201    
+    
