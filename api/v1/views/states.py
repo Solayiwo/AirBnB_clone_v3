@@ -21,5 +21,17 @@ def list_states():
 def state_id(state_id):
     """Retrieve state Using state ID"""
     data = storage.get(State, state_id)
-    #err_404(data)
+    if not data:
+        err_404(data)
     return jsonify(data.to_dict()), 200
+
+@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+def delete_state(state_id):
+    """Delete State with id"""
+    data = storage.get(State, state_id)
+    if not data:
+        abort(404)
+    else:
+        storage.delete(data)
+        storage.save()
+    return jsonify({}), 200
