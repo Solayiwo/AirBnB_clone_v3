@@ -29,19 +29,19 @@ def get_city_id(city_id):
     """Retrieve city Using city ID"""
     data = storage.get(City, city_id)
     if not data:
-        err_404(data)
+        abort(404)
     return jsonify(data.to_dict()), 200
 
-# @app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
-# def delete_state(state_id):
-#     """Delete State with id"""
-#     data = storage.get(State, state_id)
-#     if not data:
-#         abort(404)
-#     else:
-#         storage.delete(data)
-#         storage.save()
-#     return jsonify({}), 200
+@app_views.route('cities/<city_id>', methods=['DELETE'], strict_slashes=False)
+def delete_city(city_id):
+    """Delete city with id"""
+    data = storage.get(City, city_id)
+    if not data:
+        abort(404)
+    else:
+        storage.delete(data)
+        storage.save()
+    return jsonify({}), 200
 
 # @app_views.route('/states', methods=['POST'], strict_slashes=False)
 # def post_states():
@@ -58,4 +58,30 @@ def get_city_id(city_id):
 #     inst.save()
 
 #     return jsonify(inst.to_dict()), 201    
-    
+
+@app_views.route('cities/<city_id>', methods=['PUT'], strict_slashes=False)
+def update_city(state_id):
+    """update city information give state ID"""
+
+    city = storage.get(City, city_id)
+
+    if not city:
+        abrot(404)
+
+    if not request.is_json:
+        abort(404, "Not a JSON")
+
+    data = request.get_json()
+
+    # if 'name' not in data:
+    #     abort(404, "Missing name data")
+
+    ignore_fields = ['id', 'updated_at', 'created_at']
+
+    for key, value in data.items():
+        if key not in ignore_fields:
+            setattr(state, key, value)
+
+    storage.save()
+
+    return jsonify(city.to_dict()), 200
