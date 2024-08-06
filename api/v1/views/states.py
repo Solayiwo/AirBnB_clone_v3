@@ -57,3 +57,30 @@ def post_states():
     inst.save()
 
     return jsonify(inst.to_dict()), 201
+
+@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
+def update_states(state_id):
+    """update state information give state ID"""
+
+    state = storage.get(State, state_id)
+    
+    if not state:
+        abrot(404)
+
+    if not request.is_json:
+        abort(404, "Not a JSON") 
+
+    data = request.get_json()
+
+    if 'name' not in data:
+        abort(404, "Missing name data")
+    
+    ignore_fields = ['id', 'updated_at', 'created_at']
+
+    for key, value in data.items():
+        if key not in ignore_fields:
+            setattr(state, key, value)
+
+    storage.save()
+
+    return jsonify(state.to_dict()), 200
